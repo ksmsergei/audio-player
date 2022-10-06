@@ -1,0 +1,27 @@
+#player_fieldset {
+    display: inline-block;
+}
+
+#play::before {
+    content: "Play";
+}
+
+#play[data-play="play"]::before {
+    content: "Pause";
+}
+
+#replay::before {
+    content: "Enable Repeat";
+}
+
+#replay[data-replay="replay"]::before {
+    content: "Disable Repeat";
+}
+
+#volume::before {
+    content: "Mute sound";
+}
+
+#volume[data-volume="mute"]::before {
+    content: "Unmute sound";
+}

@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+  <title>ksm Audio Player</title>
+</head>
+
+<body>
+    <fieldset id="player_fieldset">
+        <legend>Audio Player</legend>
+        <button id="load">Load Autio</button><br><br><br>
+        <span id="caption">Song name</span><br><br>
+        <span id="duration">00:00 / 00:00</span>&nbsp;&nbsp;&nbsp;&nbsp;
+        <progress id="audio_progress" value="0"></progress><br><br>
+        <button id="play"></button>&nbsp;&nbsp;&nbsp;&nbsp;
+        <button id="replay"></button><br><br>
+        <button id="volume"></button>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input id="volume_range" type="range" min="0" max="1" step="0.01" value="1"/>
+    </fieldset>
+
+
+    <link rel="stylesheet" href="style.css">
+    <script src="jquery-1.12.4.min.js"></script>
+    <script src="player.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
