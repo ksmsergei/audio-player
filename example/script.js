@@ -11,6 +11,5 @@ let options = {
 let Player = new AudioPlayer(options);
 
 $("#load").click(function(){
-    alert("hi");
     Player.PlayAudio("MP3 test file", "mp3_example.mp3");
 });
