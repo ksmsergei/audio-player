@@ -91,3 +91,8 @@ You can use this to change css styles to suit your needs. Here is a small exampl
     content: "Unmute sound";
 }
 ```
+
+Usage example
+---
+You can see and try out this audio player from this [link](https://ksmsergei.github.io/audio_player/example/).<br>
+This example is located in this repository, in the folder **"example"**.
