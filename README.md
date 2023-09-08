@@ -26,8 +26,8 @@ It might look something like this:
 
 After that you have to include jQuery and player.js:
 ```html
-    <script src="jquery-1.12.4.min.js"></script>
-    <script src="player.js"></script>
+<script src="jquery-1.12.4.min.js"></script>
+<script src="player.js"></script>
 ```
 
 Now it only remains to create an Audio Player and connect it to your elements:
