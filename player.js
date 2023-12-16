@@ -4,13 +4,37 @@
         var audio = $(new Audio()).attr("id", "audioPlayerJS").appendTo("body");
         this.audio = audio;
 
-        var playButton = options.playButton;            //Кнопка проигрывания
-        var captionText = options.captionText;          //Элемент для отображения названия аудио
-        var durationText = options.durationText;        //Элемент для отображения длительносьти аудио
-        var volumeButton = options.volumeButton;        //Кнопка для полного оключения звука
-        var volumeRange = options.volumeRange;          //Ползунок громости, должен быть input с типом range
-        var progressBar = options.progressBar;          //Элемент отображающий на каком моменте играет аудио, должен быть элементом progress
-        var replayButton = options.replayButton;        //Кнопка повтора
+        var playButton = options.playButton;
+        var captionText = options.captionText;
+        var durationText = options.durationText;
+        var volumeButton = options.volumeButton;
+        var volumeRange = options.volumeRange;
+        var progressBar = options.progressBar;
+        var replayButton = options.replayButton;
+        var backwardButton = options.backwardButton;
+        var forwardButton = options.forwardButton;
+        var visualCanvas = options.visualCanvas;
+
+        var old_title; //Изначальный заголовк страницы
+        var title_timer = null; //Хэндл таймера, для его остановки
+
+        var StopTitle = function() {
+            if (title_timer != null){ //Если заголовок движется, остановить его
+                clearTimeout(title_timer);
+                title_timer = null;
+                $("title").html(old_title); //Поставить старый заголовок
+            }
+        };
+
+        var StartTitle = function(text) {
+            StopTitle(); //Перед тем как поставить новый заголовок, убрать старый
+            old_title = $("title").html();
+
+            $("title").html(text);  //Выставляет новый заголовок
+            title_timer = setTimeout(function () {    //Запускаем таймер для изменения заголовка
+                StartTitle(text.substr(1) + text.substr(0, 1)); //Убираем первый символ, добавляем его в конец
+            }, 500);
+        };
 
         var TimeToString = function(time) {
             time = Math.floor(time);
@@ -36,10 +60,12 @@
 
         audio.on("play", function(){
             playButton.attr("data-play", "play");
+            StartTitle( $("#caption").text() + " | ");
         });
 
         audio.on("pause", function(){
             playButton.attr("data-play", "");
+            StopTitle();
         });
 
         ///////////////////////////Кнопка повтора/////////////////////////////////////////
@@ -108,7 +134,7 @@
             audio.prop("volume", $(this).val());
         });
 
-        volumeButton.on("click", function(){  //Возможность выключения звука простым нажатием на иконку
+        volumeButton.on("dblclick", function(){  //Возможность выключения звука простым нажатием на иконку
             if (is_mute) {
                 is_mute = false;
                 volumeRange.val(old_volume);
@@ -129,6 +155,38 @@
 
             audio.prop("volume", volumeRange.val());
         });
+
+        ///////////////////////////Вперёд и назад/////////////////////////////////////////
+        forwardButton.on("click", function(){
+            if (playList.songIndex == -1) return;
+
+            if (playList.songIndex == playList.songs.length - 1) {
+                PlayAudioFromPlayList(0);
+                return;
+            }
+
+            PlayAudioFromPlayList( playList.songIndex + 1 );
+        });
+
+        backwardButton.on("click", function(){
+            if (playList.songIndex == -1) return;
+
+            if (playList.songIndex == 0) {
+                PlayAudioFromPlayList( playList.songs.length - 1 );
+                return;
+            }
+
+            PlayAudioFromPlayList( playList.songIndex - 1 );
+        });
+
+        ///////////////////////////Визуализатор аудио/////////////////////////////////////
+        var wave = new Wave();
+        wave_options = {
+            type: "bars",
+            colors: ["#2456F6", "#3A3CFE", "#5A21FE", "#5A21FE", "#7611F7"],
+            stroke: 4
+        };
+        wave.fromElement("audioPlayerJS", visualCanvas, wave_options);
 
         ///////////////////////////Метаданные/////////////////////////////////////////////
         audio.on("loadedmetadata", function(){
@@ -176,9 +234,49 @@
             audio.trigger("load");
 
             audio.on("canplay", function(){
+				playList.songIndex = playList.hasSong( [song_name, src] );
                 audio.trigger("play");
             });
+			
         }
         this.PlayAudio = PlayAudio;
+
+        var PlayAudioFromPlayList = function(songIndex) {
+            playList.songIndex = songIndex;
+
+            song_name = playList.songs[songIndex][0];
+            src = playList.songs[songIndex][1];
+
+            PlayAudio(song_name, src);
+        }
+        this.PlayAudioFromPlayList = PlayAudioFromPlayList;
+
+        ///////////////////////////Плэйлисты//////////////////////////////////////////////
+        var playList = {
+            songs: [],
+            songIndex: -1,
+
+            hasSong: function(song) {
+                function arraysEqual(a, b) {
+                    if (a === b) return true;
+                    if (a == null || b == null) return false;
+                    if (a.length !== b.length) return false;
+
+                    for (var i = 0; i < a.length; ++i) {
+                        if (a[i] !== b[i]) return false;
+                    }
+                    return true;
+                }
+
+                for (var i = 0; i < playList.songs.length; i++) {
+                    if (arraysEqual(song, playList.songs[i])) return i;
+                }
+                return -1;
+            },
+
+
+        };
+
+        this.playList = playList;
     }
 }());
