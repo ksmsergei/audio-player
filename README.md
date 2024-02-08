@@ -94,5 +94,5 @@ You can use this to change css styles to suit your needs. Here is a small exampl
 
 Usage example
 ---
-You can see and try out this audio player from this [link](https://ksmsergei.github.io/audio_player/example/).<br>
+You can see and try out this audio player from this [link](https://ksmsergei.github.io/audio-player/example/).<br>
 This example is located in this repository, in the folder **"example"**.
